@@ -508,37 +508,40 @@
               <span></span><span></span><span></span>
             </div>
           </div>
-          <pre><code><span class="kw">const</span> botao = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"button"</span>);
+          <pre><code><span class="cmt">&lt;!-- no HTML --&gt;</span>
+<span class="kw">&lt;button</span> <span class="prop">onclick</span>=<span class="str">"cumprimentar()"</span><span class="kw">&gt;</span>Clique aqui<span class="kw">&lt;/button&gt;</span>
 
-botao.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () => {
-  console.<span class="fn">log</span>(<span class="str">"Clicou!"</span>);
-});</code></pre>
+<span class="fn">function</span> cumprimentar() {
+  <span class="fn">alert</span>(<span class="str">"Boa tarde!"</span>);
+}</code></pre>
         </div>
 
         <ul class="explain">
           <li>
             <span
-              ><strong>Eventos</strong> — o navegador avisa quando algo acontece
-              (clique, tecla, scroll…)</span
+              ><strong>onclick</strong> — atributo do HTML que chama uma função
+              JavaScript quando o botão é clicado</span
             >
           </li>
           <li>
             <span
-              ><strong>click</strong> — disparado quando o usuário clica no
-              elemento</span
+              ><strong>function</strong> — define um bloco de código reutilizável
+              com um nome</span
             >
           </li>
           <li>
             <span
-              ><strong>addEventListener</strong> — registra uma ação a ser
-              executada quando o evento ocorrer</span
+              ><strong>alert()</strong> — abre uma janela de aviso no
+              navegador</span
             >
           </li>
         </ul>
 
         <div class="demo">
-          <p class="demo-label">Ao vivo — clique e veja a ação</p>
-          <button class="btn-primary" id="btn-evento">Clique aqui</button>
+          <p class="demo-label">Ao vivo — clique e veja o alert</p>
+          <button class="btn-primary" onclick="cumprimentar()">
+            Clique aqui
+          </button>
           <output id="event-log" aria-live="polite"></output>
         </div>
       </section>
@@ -614,17 +617,25 @@ box.<span class="fn">addEventListener</span>(<span class="str">"mouseover"</span
         portfolio.textContent = "Olá, Mundo!";
       });
 
-      // ── Slide 13 — Eventos ──
-      const botao = document.querySelector("#btn-evento");
-      const eventLog = document.querySelector("#event-log");
-      let clickCount = 0;
+      // ── Slide 13 — Eventos (onclick) ──
+      function cumprimentar() {
+        const hora = new Date().getHours();
+        let mensagem;
 
-      botao.addEventListener("click", () => {
-        clickCount++;
-        console.log("Clicou!");
-        eventLog.textContent = `console.log("Clicou!") — ${clickCount}x`;
+        if (hora < 12) {
+          mensagem = "Bom dia!";
+        } else if (hora < 18) {
+          mensagem = "Boa tarde!";
+        } else {
+          mensagem = "Boa noite!";
+        }
+
+        alert(mensagem);
+
+        const eventLog = document.querySelector("#event-log");
+        eventLog.textContent = `alert("${mensagem}")`;
         eventLog.classList.add("visible");
-      });
+      }
 
       // ── Slide 14 — Interação visual ──
       const box = document.querySelector(".box");
