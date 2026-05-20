@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS + HTML — Workshop</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #09090b;
+        --surface: #111113;
+        --surface-hover: #18181b;
+        --border: #27272a;
+        --border-subtle: #1f1f23;
+        --text: #fafafa;
+        --text-muted: #a1a1aa;
+        --text-faint: #71717a;
+        --accent: #3b82f6;
+        --accent-soft: rgba(59, 130, 246, 0.12);
+        --green: #22c55e;
+        --green-soft: rgba(34, 197, 94, 0.12);
+        --mono:
+          "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+        --sans:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui,
+          sans-serif;
+        --radius: 10px;
+        --radius-lg: 14px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Layout */
+      .page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 64px 24px 120px;
+      }
+
+      /* Header */
+      .header {
+        margin-bottom: 72px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 4px 12px;
+        margin-bottom: 20px;
+      }
+
+      .badge-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+        margin-bottom: 12px;
+      }
+
+      .header p {
+        color: var(--text-muted);
+        font-size: 1rem;
+        max-width: 480px;
+      }
+
+      /* Nav */
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 56px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .nav a {
+        font-size: 13px;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+        transition:
+          color 0.15s,
+          background 0.15s,
+          border-color 0.15s;
+      }
+
+      .nav a:hover {
+        color: var(--text);
+        background: var(--surface);
+        border-color: var(--border);
+      }
+
+      /* Slide sections */
+      .slide {
+        margin-bottom: 80px;
+        scroll-margin-top: 32px;
+      }
+
+      .slide-header {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .slide-number {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-faint);
+        font-variant-numeric: tabular-nums;
+        min-width: 28px;
+      }
+
+      .slide-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      /* Code block */
+      .code-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+
+      .code-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border-subtle);
+        font-size: 12px;
+        color: var(--text-faint);
+      }
+
+      .code-dots {
+        display: flex;
+        gap: 6px;
+      }
+
+      .code-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--border);
+      }
+
+      pre {
+        padding: 20px;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--text-muted);
+      }
+
+      .kw {
+        color: #c084fc;
+      }
+      .fn {
+        color: #60a5fa;
+      }
+      .str {
+        color: #86efac;
+      }
+      .prop {
+        color: #fbbf24;
+      }
+      .cmt {
+        color: var(--text-faint);
+      }
+
+      /* Explanation list */
+      .explain {
+        list-style: none;
+        margin-bottom: 24px;
+      }
+
+      .explain li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+        color: var(--text-muted);
+        padding: 6px 0;
+      }
+
+      .explain li::before {
+        content: "→";
+        color: var(--text-faint);
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .explain strong {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      /* Demo area */
+      .demo {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+      }
+
+      .demo-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+        margin-bottom: 20px;
+      }
+
+      /* Slide 11 — target h1 */
+      #demo-titulo {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        transition:
+          outline 0.2s,
+          color 0.2s;
+        outline: 2px solid transparent;
+        outline-offset: 6px;
+        border-radius: 4px;
+        display: inline-block;
+      }
+
+      #demo-titulo.selected {
+        outline-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* Slide 12 */
+      .demo-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      /* Buttons */
+      button {
+        font-family: var(--sans);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        transition:
+          background 0.15s,
+          opacity 0.15s,
+          transform 0.1s;
+      }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary {
+        background: var(--text);
+        color: var(--bg);
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-secondary {
+        background: var(--surface-hover);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border);
+      }
+
+      .btn-accent {
+        background: var(--accent-soft);
+        color: var(--accent);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+      }
+
+      .btn-accent:hover {
+        background: rgba(59, 130, 246, 0.2);
+      }
+
+      /* Slide 13 — event log */
+      #event-log {
+        margin-top: 16px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--green);
+        min-height: 20px;
+        padding: 10px 14px;
+        background: var(--green-soft);
+        border-radius: 8px;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      #event-log.visible {
+        opacity: 1;
+      }
+
+      /* Slide 14 — box */
+      .box {
+        width: 160px;
+        height: 160px;
+        border-radius: var(--radius);
+        background: #27272a;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: var(--text-muted);
+        cursor: default;
+        transition:
+          background-color 0.25s ease,
+          transform 0.25s ease;
+        user-select: none;
+      }
+
+      .box:hover {
+        transform: scale(1.03);
+      }
+
+      .box.hint {
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          border-color: var(--border);
+        }
+        50% {
+          border-color: var(--accent);
+        }
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-faint);
+        padding-top: 32px;
+        border-top: 1px solid var(--border-subtle);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="header">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          1º Período · Frontend Workshop
+        </div>
+        <h1>JavaScript + HTML</h1>
+        <p>
+          Integração básica — selecionar elementos, mudar conteúdo, ouvir
+          eventos e criar interações visuais.
+        </p>
+      </header>
+
+      <nav class="nav" aria-label="Slides">
+        <a href="#slide-11">11 · Selecionar</a>
+        <a href="#slide-12">12 · Conteúdo</a>
+        <a href="#slide-13">13 · Eventos</a>
+        <a href="#slide-14">14 · Visual</a>
+      </nav>
+
+      <!-- Slide 11 -->
+      <section class="slide" id="slide-11">
+        <div class="slide-header">
+          <span class="slide-number">11</span>
+          <h2 class="slide-title">Selecionando elementos</h2>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span>script.js</span>
+            <div class="code-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <pre><code><span class="kw">const</span> titulo = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"h1"</span>);</code></pre>
+        </div>
+
+        <ul class="explain">
+          <li>
+            <span
+              ><strong>document</strong> — representa toda a página HTML
+              carregada no navegador</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>querySelector</strong> — busca o primeiro elemento que
+              corresponde ao seletor CSS</span
+            >
+          </li>
+        </ul>
+
+        <div class="demo">
+          <p class="demo-label">Ao vivo</p>
+          <h1 id="demo-titulo">Olá, Mundo!</h1>
+          <div class="demo-actions">
+            <button class="btn-accent" id="btn-selecionar">
+              Selecionar h1
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 12 -->
+      <section class="slide" id="slide-12">
+        <div class="slide-header">
+          <span class="slide-number">12</span>
+          <h2 class="slide-title">Mudando conteúdo</h2>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span>script.js</span>
+            <div class="code-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <pre><code>titulo.<span class="prop">textContent</span> = <span class="str">"Meu Portfólio"</span>;</code></pre>
+        </div>
+
+        <ul class="explain">
+          <li>
+            <span
+              ><strong>textContent</strong> — altera o texto visível dentro do
+              elemento</span
+            >
+          </li>
+        </ul>
+
+        <div class="demo">
+          <p class="demo-label">Ao vivo — texto mudando</p>
+          <h1 id="demo-portfolio">Olá, Mundo!</h1>
+          <div class="demo-actions">
+            <button class="btn-primary" id="btn-mudar">
+              titulo.textContent = "Meu Portfólio"
+            </button>
+            <button class="btn-secondary" id="btn-reset">Resetar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 13 -->
+      <section class="slide" id="slide-13">
+        <div class="slide-header">
+          <span class="slide-number">13</span>
+          <h2 class="slide-title">Eventos</h2>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span>script.js</span>
+            <div class="code-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <pre><code><span class="kw">const</span> botao = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">"button"</span>);
+
+botao.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () => {
+  console.<span class="fn">log</span>(<span class="str">"Clicou!"</span>);
+});</code></pre>
+        </div>
+
+        <ul class="explain">
+          <li>
+            <span
+              ><strong>Eventos</strong> — o navegador avisa quando algo acontece
+              (clique, tecla, scroll…)</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>click</strong> — disparado quando o usuário clica no
+              elemento</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>addEventListener</strong> — registra uma ação a ser
+              executada quando o evento ocorrer</span
+            >
+          </li>
+        </ul>
+
+        <div class="demo">
+          <p class="demo-label">Ao vivo — clique e veja a ação</p>
+          <button class="btn-primary" id="btn-evento">Clique aqui</button>
+          <output id="event-log" aria-live="polite"></output>
+        </div>
+      </section>
+
+      <!-- Slide 14 -->
+      <section class="slide" id="slide-14">
+        <div class="slide-header">
+          <span class="slide-number">14</span>
+          <h2 class="slide-title">Interação visual</h2>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">
+            <span>script.js</span>
+            <div class="code-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <pre><code><span class="kw">const</span> box = <span class="fn">document</span>.<span class="fn">querySelector</span>(<span class="str">".box"</span>);
+
+box.<span class="fn">addEventListener</span>(<span class="str">"mouseover"</span>, () => {
+  box.<span class="prop">style</span>.<span class="prop">backgroundColor</span> = <span class="str">"blue"</span>;
+});</code></pre>
+        </div>
+
+        <ul class="explain">
+          <li>
+            <span
+              ><strong>mouseover</strong> — dispara quando o mouse entra no
+              elemento</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>style</strong> — permite alterar CSS diretamente via
+              JavaScript</span
+            >
+          </li>
+        </ul>
+
+        <div class="demo">
+          <p class="demo-label">Ao vivo — mouse → muda cor</p>
+          <div class="box hint" role="img" aria-label="Caixa interativa">
+            Passe o mouse
+          </div>
+        </div>
+      </section>
+
+      <footer>@lucasmarkes</footer>
+    </main>
+
+    <script>
+      // ── Slide 11 — Selecionando elementos ──
+      const titulo = document.querySelector("#demo-titulo");
+      const btnSelecionar = document.querySelector("#btn-selecionar");
+
+      btnSelecionar.addEventListener("click", () => {
+        titulo.classList.add("selected");
+        btnSelecionar.textContent = "✓ Elemento selecionado!";
+        btnSelecionar.disabled = true;
+      });
+
+      // ── Slide 12 — Mudando conteúdo ──
+      const portfolio = document.querySelector("#demo-portfolio");
+      const btnMudar = document.querySelector("#btn-mudar");
+      const btnReset = document.querySelector("#btn-reset");
+
+      btnMudar.addEventListener("click", () => {
+        portfolio.textContent = "Meu Portfólio";
+      });
+
+      btnReset.addEventListener("click", () => {
+        portfolio.textContent = "Olá, Mundo!";
+      });
+
+      // ── Slide 13 — Eventos ──
+      const botao = document.querySelector("#btn-evento");
+      const eventLog = document.querySelector("#event-log");
+      let clickCount = 0;
+
+      botao.addEventListener("click", () => {
+        clickCount++;
+        console.log("Clicou!");
+        eventLog.textContent = `console.log("Clicou!") — ${clickCount}x`;
+        eventLog.classList.add("visible");
+      });
+
+      // ── Slide 14 — Interação visual ──
+      const box = document.querySelector(".box");
+
+      box.addEventListener("mouseover", () => {
+        box.style.backgroundColor = "blue";
+        box.textContent = "Azul!";
+        box.classList.remove("hint");
+      });
+
+      box.addEventListener("mouseout", () => {
+        box.style.backgroundColor = "";
+        box.textContent = "Passe o mouse";
+      });
+    </script>
+  </body>
+</html>
